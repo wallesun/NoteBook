@@ -16,6 +16,24 @@
 * splice()
 * sort()
 * reverse()
-* 以上是Vue数组中的变异方法，也就是会改变原数组的方法，以下是不会改变原数组的方法
+* 以上是Vue数组中的变异方法，也就是会改变原数组的方法，以下是不会改变原数组的方法（替换数组）
   * filter(), concat() 和 slice()；这些方法不会改变原数组，但是会返回一个新数组
-  
+## 注意事项
+* 因为JavaScript的限制，Vue不能检测下边这种变动的数组
+ * 当直接利用索引改变数组的时候，``` Array[index] = string;```
+ * 直接改变数组的长度 ``` Array.length = number```
+ ```
+ var vm = new Vue({
+  data: {
+   items: ['a','b','c']
+  }
+ })
+ vm.items[1] = 'd'; // 不是响应性的
+ ```
+* 针对第一种情况，可以采用下边方式解决，可以触发状态更新
+```Vue.set(items, index, newValue);```
+``` vm.items.splice(index, 1, newValue);```
+* 同样对于json对象也存在这种情况，解决办法：
+``` Vue.set(object, key, value )```
+* v-for同样可以用在组件中，但是不会直接将数据传递给组件，因为组件有独立作用域，需要通过props来通信
+
