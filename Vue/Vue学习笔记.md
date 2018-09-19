@@ -149,4 +149,34 @@ Vue.config.keyCodes.f1 = 112
 * .number   如果想自动将用户的输入值转为数值类型，可以给 v-model 添加 number 修饰符：这通常很有用，因为即使在 type="number" 时，HTML 输入元素的值也总会返回字符串。
 * .trim   如果要自动过滤用户输入的首尾空白字符，可以给 v-model 添加 trim 修饰符
 ## 4、 组件基础
-
+### 基本知识
+* 因为组件是可复用的 Vue 实例，所以它们与 new Vue 接收相同的选项，例如 data、computed、watch、methods 以及生命周期钩子等。仅有的例外是像 el 这样根实例特有的选项。
+* data不能像Vue实例中那样直接用对象的方式表示，而必须是函数形式
+```
+Vue.component('myComponent', {
+ data: function() {
+  return {
+   name: 'sunzheng'
+  }
+ }
+})
+```
+### 组件名
+* 驼峰和短横线分隔命名（kebab-case）；最好还是用kebab-case命名法
+### 全局注册和局部注册
+```
+Vue.component('my-component-name', {
+  // ... 选项 ...
+})
+```
+* 全局注册的组件，可以应用在任意Vue根实例（new Vue）中，同时在子组件中也可以相互使用
+* 局部注册
+```
+new Vue({
+  el: '#app'
+  components: {
+    'component-a': ComponentA,
+    'component-b': ComponentB
+  }
+})
+```
