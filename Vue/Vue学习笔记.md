@@ -66,3 +66,79 @@
 ```
 * 事件修饰符是支持链式操作的，但是先后顺序会影响最终的操作
 * 使用修饰符时，顺序很重要；相应的代码会以同样的顺序产生。因此，用 v-on:click.prevent.self 会阻止所有的点击，而 v-on:click.self.prevent 只会阻止对元素自身的点击。
+### 按键修饰符
+* 针对键盘事件，Vue提供了按键修饰符，只有触发对应按键事件的时候，才会执行该方法
+* 全部的按键别名： .enter   .tab   .delete (捕获“删除”和“退格”键)   .esc   .space   .up   .down   .left   .right
+* 可以通过全局 config.keyCodes 对象自定义按键修饰符别名
+``` 
+// 可以使用 `v-on:keyup.f1`
+Vue.config.keyCodes.f1 = 112
+```
+### 鼠标按键修饰符
+* .right    .left    .middle
+## 3、表单输入绑定
+### 基本用法
+* 可以使用v-model在input， textarea， select上实现双向数据绑定
+* v-model 会忽略所有表单元素的 value、checked、selected 特性的初始值而总是将 Vue 实例的数据作为数据来源。你应该通过 JavaScript 在组件的 data 选项中声明初始值。
+### 复选框
+* 单个复选框直接使用checked布尔值
+```
+<input type="checkbox" id="checkbox" v-model="checked">
+<label for="checkbox">{{ checked }}</label>
+```
+* 多个复选框可以绑定到同一个数组上
+```
+<div id='example-3'>
+  <input type="checkbox" id="jack" value="Jack" v-model="checkedNames">
+  <label for="jack">Jack</label>
+  <input type="checkbox" id="john" value="John" v-model="checkedNames">
+  <label for="john">John</label>
+  <input type="checkbox" id="mike" value="Mike" v-model="checkedNames">
+  <label for="mike">Mike</label>
+  <br>
+  <span>Checked names: {{ checkedNames }}</span>
+</div>
+```
+* 如果v-model绑定的是字符串则其绑定的值都是value的值
+### 单选框
+* 单选框绑定时候，如果v-model绑定的是字符串，则其值也是value的值，也可以绑定布尔值
+```
+<div id="example-4">
+  <input type="radio" id="one" value="One" v-model="picked">
+  <label for="one">One</label>
+  <br>
+  <input type="radio" id="two" value="Two" v-model="picked">
+  <label for="two">Two</label>
+  <br>
+  <span>Picked: {{ picked }}</span>
+</div>
+```
+### 选择框
+* 单选时
+```
+<div id="example-5">
+  <select v-model="selected">
+    <option disabled value="">请选择</option> // 这里添加一项，可以防止ios出问题
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+  <span>Selected: {{ selected }}</span>
+</div>
+```
+* 多选时（绑定到一个数组）
+```
+<div id="example-6">
+  <select v-model="selected" multiple style="width: 50px;">
+    <option>A</option>
+    <option>B</option>
+    <option>C</option>
+  </select>
+  <br>
+  <span>Selected: {{ selected }}</span>
+</div>
+```
+### 值绑定（不同于字符串绑定）
+* 复选框
+```
+<input v-model="toggle" type="checkbox" true-value="yes" false-value="no"/>
