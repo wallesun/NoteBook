@@ -142,3 +142,11 @@ Vue.config.keyCodes.f1 = 112
 * 复选框
 ```
 <input v-model="toggle" type="checkbox" true-value="yes" false-value="no"/>
+```
+### 修饰符
+* .lazy
+* 在默认情况下，v-model 在每次 input 事件触发后将输入框的值与数据进行同步 (除了上述输入法组合文字时)。你可以添加 lazy 修饰符，从而转变为使用 change 事件进行同步：
+* .number   如果想自动将用户的输入值转为数值类型，可以给 v-model 添加 number 修饰符：这通常很有用，因为即使在 type="number" 时，HTML 输入元素的值也总会返回字符串。
+* .trim   如果要自动过滤用户输入的首尾空白字符，可以给 v-model 添加 trim 修饰符
+## 4、 组件基础
+
