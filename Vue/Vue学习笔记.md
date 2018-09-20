@@ -180,4 +180,119 @@ new Vue({
   }
 })
 ```
+### 在模块系统中注册组件
+```
+import ComponentA from './ComponentA'
+import ComponentC from './ComponentC'
+
+export default {
+  components: { // es6语法
+    ComponentA,
+    ComponentC
+  },
+  // ...
+}
+```
+### 基础组件的自动全局化注册
+* 可以在入口文件像下边这样全局注册，就不用每次使用这些基础组件都要引入了
+```
+import Vue from 'vue'
+import upperFirst from 'lodash/upperFirst'
+import camelCase from 'lodash/camelCase'
+
+const requireComponent = require.context(
+  // 其组件目录的相对路径
+  './components',
+  // 是否查询其子目录
+  false,
+  // 匹配基础组件文件名的正则表达式
+  /Base[A-Z]\w+\.(vue|js)$/
+)
+
+requireComponent.keys().forEach(fileName => {
+  // 获取组件配置
+  const componentConfig = requireComponent(fileName)
+
+  // 获取组件的 PascalCase 命名
+  const componentName = upperFirst(
+    camelCase(
+      // 剥去文件名开头的 `./` 和结尾的扩展名
+      fileName.replace(/^\.\/(.*)\.\w+$/, '$1')
+    )
+  )
+
+  // 全局注册组件
+  Vue.component(
+    componentName,
+    // 如果这个组件选项是通过 `export default` 导出的，
+    // 那么就会优先使用 `.default`，
+    // 否则回退到使用模块的根。
+    componentConfig.default || componentConfig
+  )
+})
+```
+### 通过prop向子组件传递数据
+* 通过v-bind的形式向组件专递数据，同时在组件中声名props
+```
+Vue.component('blog-post', {
+  props: ['title'],
+  template: '<h3>{{ title }}</h3>'
+})
+```
+* 单个根节点
+* 注册组件时候，模板内只能有一个根节点，否则报错
+```
+<div class="blog-post"> // 所有内容都包含在这个父元素中
+  <h3>{{ title }}</h3>
+  <div v-html="content"></div>
+</div>
+```
+### 通过事件向父组件发送消息
+* $emit 方法可以触发一个事件，然后向父组件传递数据
+```
+<button v-on:click="$emit('enlarge-text')">
+  Enlarge text
+</button>
+```
+* 在内部用$emit触发事件“enlarge-text”，这时候组件中就可以用v-on监测“enlarge-text”这个方法，并触发其对应的方法
+```
+<blog-post
+  ...
+  v-on:enlarge-text="postFontSize += 0.1"
+></blog-post>
+```
+* 还可以用$emit抛出一个子组件内的数据，```$emit('enlarge-text', data)```这里边data就是抛出的数据，如果enlarge-text绑定的是一个方法，则data会作为第一个参数传入这个方法（函数）
+### 通过插槽分发内容
+* 当想往组件内放置内容的时候，可以通过slot来解决
+```
+<alert-box>
+  Something bad happened.
+</alert-box>
+
+Vue.component('alert-box', {
+  template: `
+    <div class="demo-alert-box">
+      <strong>Error!</strong>
+      <slot></slot>
+    </div>
+  `
+})
+```
+* 最终显示出来 Error! Something bad happend.  也就是说，想插入的内容会出现在<slot></slot>这个元素内，位置也与slot元素位置对应
+### 动态组件
+* 可以使用 is 特性来实现动态组件
+```
+<!-- 组件会在 `currentTabComponent` 改变时改变 -->
+<component v-bind:is="currentTabComponent"></component>
+```
+### 解析Dom模板时的注意事项
+* 有些 HTML 元素，诸如 <ul>、<ol>、<table> 和 <select>，对于哪些元素可以出现在其内部是有严格限制的。而有些元素，诸如 <li>、<tr> 和 <option>，只能出现在其它某些特定的元素内部。
+ * 此时可以使用is特性来避免这种情况
+ ```
+ <table>
+  <tr is="blog-post-row"></tr>
+</table>
+ ```
+ * 将组件信息用is来表示，这样就不会违反W3C规则
+ 
 
