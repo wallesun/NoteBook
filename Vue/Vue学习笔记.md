@@ -286,7 +286,7 @@ Vue.component('alert-box', {
 <component v-bind:is="currentTabComponent"></component>
 ```
 ### 解析Dom模板时的注意事项
-* 有些 HTML 元素，诸如 <ul>、<ol>、<table> 和 <select>，对于哪些元素可以出现在其内部是有严格限制的。而有些元素，诸如 <li>、<tr> 和 <option>，只能出现在其它某些特定的元素内部。
+* 有些 HTML 元素，诸如 ```<ul>、<ol>、<table> 和 <select>```，对于哪些元素可以出现在其内部是有严格限制的。而有些元素，诸如 ```<li>、<tr> 和 <option>```，只能出现在其它某些特定的元素内部。
  * 此时可以使用is特性来避免这种情况
  ```
  <table>
@@ -294,5 +294,28 @@ Vue.component('alert-box', {
 </table>
  ```
  * 将组件信息用is来表示，这样就不会违反W3C规则
- 
+### Prop
+* Prop的大小写———— 如果是使用驼峰命名方式，在html中表示时必须用短横线连接
+```
+Vue.component('blog-post', {
+  // 在 JavaScript 中是 camelCase 的
+  props: ['postTitle'],
+  template: '<h3>{{ postTitle }}</h3>'
+})
+
+<!-- 在 HTML 中是 kebab-case 的 -->
+<blog-post post-title="hello!"></blog-post>
+```
+* 注意在 JavaScript 中对象和数组是通过引用传入的，所以对于一个数组或对象类型的 prop 来说，在子组件中改变这个对象或数组本身将会影响到父组件的状态。
+* 注意那些 prop 会在一个组件实例创建之前进行验证，所以实例的属性 (如 data、computed 等) 在 default 或 validator 函数中是不可用的。
+### 禁用特性继承
+* 如果你不希望组件的根元素继承特性，你可以设置在组件的选项中设置 inheritAttrs: false。例如：
+```
+Vue.component('my-component', {
+  inheritAttrs: false,
+  // ...
+})
+```
+* 这里的$attr就像原型一样，当inheritAttrs设置为false时，则props中未注册的特性，就会存在$attr中，之后所有的后代组件都可以通过$attr取到这个值（无论嵌套多少层组件）
+
 
