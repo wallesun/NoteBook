@@ -319,3 +319,4 @@ Vue.component('my-component', {
 * 这里的$attr就像原型一样，当inheritAttrs设置为false时，则props中未注册的特性，就会存在$attr中，之后所有的后代组件都可以通过$attr取到这个值（无论嵌套多少层组件）
 
 
+
